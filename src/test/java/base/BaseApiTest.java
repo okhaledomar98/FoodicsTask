@@ -16,14 +16,12 @@ public class BaseApiTest {
     public void setupApi() {
 
         RestAssured.baseURI = ConfigReader.getProperty("api.base.url");
-        RestAssured.useRelaxedHTTPSValidation();
+
 
 
         requestSpec = new RequestSpecBuilder()
                 .setContentType(ContentType.JSON)
                 .setAccept(ContentType.JSON)
-                .addHeader("User-Agent", "PostmanRuntime/7.36.3") // نتنكر في هيئة Postman
-                .addHeader("Connection", "keep-alive")
                 .log(LogDetail.ALL)
                 .build();
 
