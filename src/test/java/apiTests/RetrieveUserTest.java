@@ -35,4 +35,23 @@ public class RetrieveUserTest extends BaseApiTest {
 
         System.out.println("✅ User retrieved successfully with ID: " + userId);
     }
+
+
+    @Test(description = "Error Handling: Attempt to retrieve a non-existent user - Expect 404")
+    public void testRetrieveInvalidUser() {
+
+
+        String invalidUserId = "999999999";
+
+        given()
+                .spec(requestSpec)
+                .pathParam("id", invalidUserId)
+                .when()
+                .get("/api/users/{id}")
+                .then()
+                .log().ifError()
+                .statusCode(404);
+
+        System.out.println("✅ Error handling validated: Server correctly returned 404 for invalid user ID.");
+    }
 }
