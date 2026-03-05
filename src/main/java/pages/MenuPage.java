@@ -21,23 +21,25 @@ public class MenuPage {
     private final String directAllVideoGamesUrl =
             "https://www.amazon.eg/-/en/gp/browse.html?node=18022560031&ref_=nav_em_vg_all_0_2_16_2";
 
+    private boolean tryClick(By locator) {
+        try {
+            WaitUtils.clickElement(locator);
+            return true;
+        } catch (RuntimeException ignored) {
+            return false;
+        }
+    }
+
     public MenuPage clickSeeAll() {
-        WaitUtils.clickElement(seeAllButton);
+        if (!tryClick(seeAllButton)) {
+            // Keep flow resilient when side menu variant does not show "See All".
+        }
         return this;
     }
 
     public MenuPage selectVideoGames() {
-        try {
-            WaitUtils.clickElement(videoGamesSectionPrimary);
-            return this;
-        } catch (RuntimeException ignored) {
-            // Try broader fallback.
-        }
-        try {
-            WaitUtils.clickElement(videoGamesSectionFallback);
-            return this;
-        } catch (RuntimeException ignored) {
-            // Fall through to direct URL in clickAllVideoGames.
+        if (!tryClick(videoGamesSectionPrimary)) {
+            tryClick(videoGamesSectionFallback);
         }
         return this;
     }

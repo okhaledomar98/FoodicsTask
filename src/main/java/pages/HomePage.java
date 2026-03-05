@@ -10,22 +10,17 @@ import java.util.List;
 import java.util.Locale;
 
 public class HomePage {
-
-
-
-
+    private final By pageBody = By.tagName("body");
     private final By loginButtonPrimary = By.id("nav-link-accountList");
     private final By loginButtonFallback = By.cssSelector("a#nav-link-accountList, a[data-nav-role='signin']");
     private final String directSignInUrl = "https://www.amazon.eg/ap/signin";
     private final String amazonHomeUrl = "https://www.amazon.eg/";
-
-
+    private final String amazonEnglishHomeUrl = "https://www.amazon.eg/?language=en_AE";
     private final By allMenuButton = By.id("nav-hamburger-menu");
-
-
+    private final By languageHeaderIndicator = By.cssSelector("#icp-nav-flyout, #icp-nav-flyout-2");
 
     public LoginPage clickLogin() {
-        WaitUtils.waitForElementVisible(By.tagName("body"));
+        WaitUtils.waitForElementVisible(pageBody);
         try {
             WaitUtils.safeClickWithScrollAndJsFallback(loginButtonPrimary);
             return new LoginPage();
@@ -38,19 +33,18 @@ public class HomePage {
             return new LoginPage();
         } catch (TimeoutException ignored) {
             DriverFactory.getDriver().get(directSignInUrl);
-            WaitUtils.waitForElementVisible(By.tagName("body"));
+            WaitUtils.waitForElementVisible(pageBody);
         }
 
         return new LoginPage();
     }
-
 
     public void openAllMenu() {
         WaitUtils.clickElement(allMenuButton);
     }
 
     public boolean ensureEnglishLanguage() {
-        WaitUtils.waitForElementVisible(By.tagName("body"));
+        WaitUtils.waitForElementVisible(pageBody);
         if (isEnglishUi()) {
             return true;
         }
@@ -60,7 +54,7 @@ public class HomePage {
         boolean saved = languagePage.selectEnglishAndSave();
         if (saved) {
             DriverFactory.getDriver().get(amazonHomeUrl);
-            WaitUtils.waitForElementVisible(By.tagName("body"));
+            WaitUtils.waitForElementVisible(pageBody);
         }
 
         if (isEnglishUi()) {
@@ -68,8 +62,8 @@ public class HomePage {
         }
 
         // Last fallback with explicit language query.
-        DriverFactory.getDriver().get(amazonHomeUrl + "?language=en_AE");
-        WaitUtils.waitForElementVisible(By.tagName("body"));
+        DriverFactory.getDriver().get(amazonEnglishHomeUrl);
+        WaitUtils.waitForElementVisible(pageBody);
         return isEnglishUi();
     }
 
@@ -84,7 +78,7 @@ public class HomePage {
         } catch (Exception ignored) {
         }
         try {
-            List<WebElement> navParts = DriverFactory.getDriver().findElements(By.cssSelector("#icp-nav-flyout, #icp-nav-flyout-2"));
+            List<WebElement> navParts = DriverFactory.getDriver().findElements(languageHeaderIndicator);
             String navText = navParts.isEmpty() ? "" : navParts.get(0).getText();
             if (navText != null) {
                 String lowered = navText.toLowerCase(Locale.ROOT);
@@ -95,7 +89,7 @@ public class HomePage {
                     return false;
                 }
             }
-            String bodyText = DriverFactory.getDriver().findElement(By.tagName("body")).getText();
+            String bodyText = DriverFactory.getDriver().findElement(pageBody).getText();
             if (bodyText == null || bodyText.isBlank()) {
                 return false;
             }

@@ -6,14 +6,12 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.support.ui.Select;
 import utils.DriverFactory;
 import utils.WaitUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.time.Duration;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -501,7 +499,7 @@ public class ProductsPage {
 
     private String waitForNewWindowHandle(Set<String> existingHandles) {
         try {
-            new WebDriverWait(DriverFactory.getDriver(), Duration.ofSeconds(10))
+            WaitUtils.getCustomWait(10)
                     .until(d -> d.getWindowHandles().size() > existingHandles.size());
             for (String handle : DriverFactory.getDriver().getWindowHandles()) {
                 if (!existingHandles.contains(handle)) {
@@ -582,7 +580,7 @@ public class ProductsPage {
 
     private boolean waitForCartCountIncrease(int beforeCount) {
         try {
-            new WebDriverWait(DriverFactory.getDriver(), Duration.ofSeconds(8))
+            WaitUtils.getCustomWait(8)
                     .until(d -> getCartCount() > beforeCount);
             return true;
         } catch (Exception ex) {
@@ -592,7 +590,7 @@ public class ProductsPage {
 
     private void clickIfPresent(By locator) {
         try {
-            new WebDriverWait(DriverFactory.getDriver(), Duration.ofSeconds(3))
+            WaitUtils.shortWait()
                     .until(d -> !d.findElements(locator).isEmpty());
             WaitUtils.safeClickWithScrollAndJsFallback(locator);
         } catch (Exception ignored) {

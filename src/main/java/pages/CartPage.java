@@ -6,7 +6,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import utils.DriverFactory;
 import utils.WaitUtils;
-import java.time.Duration;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -92,7 +91,7 @@ public class CartPage {
             }
 
             try {
-                new WebDriverWait(DriverFactory.getDriver(), Duration.ofSeconds(5))
+                WaitUtils.shortWait()
                         .until(d -> d.findElements(deleteItemButtons).size() < beforeCount);
             } catch (Exception ignored) {
                 // Continue; cart DOM can refresh asynchronously.

@@ -3,10 +3,9 @@ package pages;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import utils.DriverFactory;
+import utils.JavaScriptActions;
 import utils.WaitUtils;
-import java.time.Duration;
 import java.util.List;
 
 public class LanguagePage {
@@ -143,14 +142,12 @@ public class LanguagePage {
 
     private boolean clickElement(WebElement target) {
         try {
-            ((JavascriptExecutor) DriverFactory.getDriver())
-                    .executeScript("arguments[0].scrollIntoView({block:'center'});", target);
+            JavaScriptActions.scrollIntoViewCenter(target);
             target.click();
             return true;
         } catch (Exception ex) {
             try {
-                ((JavascriptExecutor) DriverFactory.getDriver())
-                        .executeScript("arguments[0].click();", target);
+                JavaScriptActions.click(target);
                 return true;
             } catch (Exception jsEx) {
                 return false;
@@ -160,7 +157,7 @@ public class LanguagePage {
 
     private boolean waitForLanguageApply() {
         try {
-            new WebDriverWait(DriverFactory.getDriver(), Duration.ofSeconds(10)).until(d -> {
+            WaitUtils.getCustomWait(10).until(d -> {
                 String currentUrl = d.getCurrentUrl();
                 if (currentUrl != null && currentUrl.contains("language=en")) {
                     return true;

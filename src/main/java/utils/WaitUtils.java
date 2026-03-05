@@ -10,9 +10,24 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 
 public class WaitUtils {
+    public static final int SHORT_WAIT_SECONDS = 5;
+    public static final int DEFAULT_WAIT_SECONDS = 15;
+    public static final int LONG_WAIT_SECONDS = 20;
 
     private static WebDriverWait getWait() {
-        return new WebDriverWait(DriverFactory.getDriver(), Duration.ofSeconds(15));
+        return new WebDriverWait(DriverFactory.getDriver(), Duration.ofSeconds(DEFAULT_WAIT_SECONDS));
+    }
+
+    public static WebDriverWait shortWait() {
+        return new WebDriverWait(DriverFactory.getDriver(), Duration.ofSeconds(SHORT_WAIT_SECONDS));
+    }
+
+    public static WebDriverWait longWait() {
+        return new WebDriverWait(DriverFactory.getDriver(), Duration.ofSeconds(LONG_WAIT_SECONDS));
+    }
+
+    public static WebDriverWait getCustomWait(int seconds) {
+        return new WebDriverWait(DriverFactory.getDriver(), Duration.ofSeconds(seconds));
     }
 
     public static void safeClickWithScrollAndJsFallback(By locator) {
