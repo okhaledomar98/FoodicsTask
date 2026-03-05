@@ -1,0 +1,22 @@
+# API Configurations
+api.base.url=https://reqres.in
+
+# UI Configurations
+ui.amazon.url=https://www.amazon.eg/
+browser=chrome
+ui.implicit.wait=10
+
+# Amazon Credentials
+amazon.phone=YOUR_PHONE
+amazon.password=YOUR_PASSWORD
+
+# Amazon Address (required on checkout if no default address exists)
+amazon.address.fullName=YOUR_FULL_NAME
+amazon.address.phone=YOUR_PHONE
+amazon.address.line1=YOUR_STREET_AND_BUILDING
+amazon.address.city=YOUR_CITY
+amazon.address.cityArea=YOUR_CITY_AREA
+amazon.address.area=YOUR_AREA
+amazon.address.district=YOUR_DISTRICT
+amazon.address.governorate=YOUR_GOVERNORATE
+amazon.address.building=YOUR_BUILDING_NUMBER

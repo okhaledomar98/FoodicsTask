@@ -23,11 +23,12 @@ public class BaseUITest {
 
 
         int waitTime = Integer.parseInt(ConfigReader.getProperty("ui.implicit.wait"));
+        int effectiveImplicitWait = Math.min(Math.max(waitTime, 0), 3);
         String url = ConfigReader.getProperty("ui.amazon.url");
 
 
         driver.manage().window().maximize();
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(waitTime));
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(effectiveImplicitWait));
 
 
         driver.get(url);

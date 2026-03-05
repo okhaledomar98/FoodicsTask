@@ -1,26 +1,24 @@
 package config;
-import java.io.FileInputStream;
+
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
+
 public class ConfigReader {
 
-    private static Properties properties;
+    private static final Properties properties = new Properties();
 
-    // Static block to initialize the properties file only once
     static {
-        try {
-            String path = "src/main/resources/config.properties";
-            FileInputStream input = new FileInputStream(path);
-            properties = new Properties();
+        try (InputStream input = ConfigReader.class.getClassLoader().getResourceAsStream("config.properties")) {
+            if (input == null) {
+                throw new RuntimeException("Failed to load config.properties from classpath.");
+            }
             properties.load(input);
-            input.close();
         } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Failed to load config.properties file!");
+            throw new RuntimeException("Failed to load config.properties file.", e);
         }
     }
 
-    // Method to get the value by key
     public static String getProperty(String key) {
         return properties.getProperty(key);
     }

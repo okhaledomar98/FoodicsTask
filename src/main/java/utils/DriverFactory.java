@@ -5,6 +5,8 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DriverFactory {
 
@@ -19,6 +21,14 @@ public class DriverFactory {
             case "chrome":
                 ChromeOptions chromeOptions = new ChromeOptions();
                 chromeOptions.addArguments("--remote-allow-origins=*");
+                chromeOptions.addArguments("--disable-notifications");
+                chromeOptions.addArguments("--disable-features=AutofillServerCommunication");
+                Map<String, Object> prefs = new HashMap<>();
+                prefs.put("autofill.profile_enabled", false);
+                prefs.put("autofill.credit_card_enabled", false);
+                prefs.put("credentials_enable_service", false);
+                prefs.put("profile.password_manager_enabled", false);
+                chromeOptions.setExperimentalOption("prefs", prefs);
                 webDriver = new ChromeDriver(chromeOptions);
                 break;
             case "firefox":

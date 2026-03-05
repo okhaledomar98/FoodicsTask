@@ -22,13 +22,13 @@ public class ProductsPage {
 
     private final By filtersPanel = By.id("s-refinements");
     private final By freeShippingText = By.xpath(
-            "//*[@id='s-refinements']//a[.//*[contains(.,'Free Shipping') or contains(.,'FREE Delivery') or contains(.,'\u0634\u062d\u0646 \u0645\u062c\u0627\u0646\u064a')]]"
+            "//*[@id='s-refinements']//a[.//*[contains(.,'Free Shipping') or contains(.,'FREE Delivery')]]"
     );
     private final By freeShippingParam = By.cssSelector(
             "a[href*='p_76'], a[href*='free_shipping'], a[href*='shipping_option']"
     );
     private final By newConditionText = By.xpath(
-            "//*[@id='s-refinements']//a[.//*[normalize-space()='New' or normalize-space()='\u062c\u062f\u064a\u062f']]"
+            "//*[@id='s-refinements']//a[.//*[normalize-space()='New']]"
     );
     private final By newConditionParam = By.cssSelector(
             "a[href*='p_n_condition-type']"
@@ -37,7 +37,7 @@ public class ProductsPage {
     private final By sortSelect = By.id("s-result-sort-select");
     private final By sortDropdownTrigger = By.cssSelector("span[data-action='a-dropdown-button']");
     private final By sortHighToLowOption = By.xpath(
-            "//a[contains(normalize-space(),'Price: High to Low') or contains(normalize-space(),'High to Low') or contains(normalize-space(),'\u0627\u0644\u0633\u0639\u0631: \u0645\u0646 \u0627\u0644\u0623\u0639\u0644\u0649 \u0625\u0644\u0649 \u0627\u0644\u0623\u0642\u0644')]"
+            "//a[contains(normalize-space(),'Price: High to Low') or contains(normalize-space(),'High to Low')]"
     );
     private final By resultsContainer = By.cssSelector("div.s-main-slot");
     private final By pageBody = By.tagName("body");
@@ -51,7 +51,9 @@ public class ProductsPage {
     private final By productPriceInCard = By.cssSelector(".a-price .a-offscreen");
     private final By productPriceWhole = By.cssSelector(".a-price .a-price-whole");
     private final By productPriceFraction = By.cssSelector(".a-price .a-price-fraction");
-    private final By productInlineAddButton = By.cssSelector("button[name='submit.addToCart'], input[name='submit.addToCart'], [aria-label*='Add to Cart'], [aria-label*='\u0625\u0636\u0627\u0641\u0629 \u0625\u0644\u0649 \u0639\u0631\u0628\u0629 \u0627\u0644\u062a\u0633\u0648\u0642']");
+    private final By productInlineAddButton = By.cssSelector(
+            "button[name='submit.addToCart'], input[name='submit.addToCart'], [aria-label*='Add to Cart']"
+    );
     private final By nextPageButton = By.cssSelector("a.s-pagination-next:not(.s-pagination-disabled)");
     private final By addToCartButtonPrimary = By.id("add-to-cart-button");
     private final By addToCartButtonAlt = By.name("submit.add-to-cart");
@@ -61,16 +63,10 @@ public class ProductsPage {
             "#attachSiNoCoverage, input[name='submit.addCoverageDecline'], button[id*='NoCoverage']"
     );
     private final By noThanksProtectionByText = By.xpath(
-            "//button[contains(normalize-space(),'No thanks') or contains(normalize-space(),'No Thanks') " +
-            "or contains(normalize-space(),'\u0644\u0627 \u0634\u0643\u0631\u0627') or contains(normalize-space(),'\u0644\u0627 \u0634\u0643\u0631\u0627\u064b')] | " +
-            "//span[contains(normalize-space(),'No thanks') or contains(normalize-space(),'\u0644\u0627 \u0634\u0643\u0631\u0627') or contains(normalize-space(),'\u0644\u0627 \u0634\u0643\u0631\u0627\u064b')]"
+            "//button[contains(normalize-space(),'No thanks') or contains(normalize-space(),'No Thanks')] | " +
+            "//span[contains(normalize-space(),'No thanks')]"
     );
     private final By cartCountBadge = By.id("nav-cart-count");
-    private final By codMessageMarkers = By.xpath(
-            "//*[contains(translate(normalize-space(.), 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'), 'CASH ON DELIVERY')] " +
-            "or //*[contains(normalize-space(.), '\u0627\u0644\u062f\u0641\u0639 \u0639\u0646\u062f \u0627\u0644\u0627\u0633\u062a\u0644\u0627\u0645')] " +
-            "or //*[contains(normalize-space(.), '\u0627\u0644\u062f\u0641\u0639 \u0643\u0627\u0634')]"
-    );
     private final List<String> addedProductTitles = new ArrayList<>();
 
     private boolean isPresent(By locator) {
@@ -413,10 +409,6 @@ public class ProductsPage {
         DriverFactory.getDriver().get(productUrl);
         WaitUtils.waitForElementVisible(pageBody);
         try {
-            if (!isLikelyCodEligibleOnPdp()) {
-                DriverFactory.getDriver().get(returnUrl);
-                return false;
-            }
             int cartBefore = getCartCount();
             if (isPresent(addToCartButtonPrimary)) {
                 WaitUtils.safeClickWithScrollAndJsFallback(addToCartButtonPrimary);
@@ -522,20 +514,6 @@ public class ProductsPage {
         }
     }
 
-    private boolean isLikelyCodEligibleOnPdp() {
-        if (isPresent(codMessageMarkers)) {
-            return true;
-        }
-        String pageText = DriverFactory.getDriver().findElement(pageBody).getText();
-        if (pageText == null || pageText.isBlank()) {
-            return false;
-        }
-        String normalized = pageText.toLowerCase(Locale.ROOT);
-        return normalized.contains("cash on delivery")
-                || normalized.contains("\u0627\u0644\u062f\u0641\u0639 \u0639\u0646\u062f \u0627\u0644\u0627\u0633\u062a\u0644\u0627\u0645")
-                || normalized.contains("\u0627\u0644\u062f\u0641\u0639 \u0643\u0627\u0634");
-    }
-
     private boolean isLikelyMeaningfulTitle(String rawTitle) {
         if (rawTitle == null) {
             return false;
@@ -554,12 +532,7 @@ public class ProductsPage {
                 || lowered.contains("deliver")
                 || lowered.contains("viewed")
                 || lowered.contains("previously")
-                || lowered.contains("recently")
-                || lowered.contains("\u0634\u062d\u0646 \u0645\u062c\u0627\u0646\u064a")
-                || lowered.contains("\u062a\u0648\u0635\u064a\u0644")
-                || lowered.contains("\u0646\u062c\u0648\u0645")
-                || lowered.contains("\u062a\u0645 \u0639\u0631\u0636\u0647\u0627 \u0633\u0627\u0628\u0642\u064b\u0627")
-                || lowered.contains("\u0639\u0631\u0636\u0647\u0627 \u0633\u0627\u0628\u0642\u0627")) {
+                || lowered.contains("recently")) {
             return false;
         }
         return !title.matches("^[\\d\\s.,-]+$");
@@ -583,9 +556,7 @@ public class ProductsPage {
             return -1;
         }
 
-        String normalized = normalizeArabicDigits(rawPriceText)
-                .replace("\u066B", ".")
-                .replace("\u066C", ",");
+        String normalized = rawPriceText;
 
         Matcher matcher = Pattern.compile("(\\d{1,3}(?:,\\d{3})*(?:\\.\\d{1,2})?|\\d+(?:\\.\\d{1,2})?)")
                 .matcher(normalized);
@@ -599,20 +570,6 @@ public class ProductsPage {
         } catch (NumberFormatException ex) {
             return -1;
         }
-    }
-
-    private String normalizeArabicDigits(String value) {
-        return value
-                .replace('\u0660', '0')
-                .replace('\u0661', '1')
-                .replace('\u0662', '2')
-                .replace('\u0663', '3')
-                .replace('\u0664', '4')
-                .replace('\u0665', '5')
-                .replace('\u0666', '6')
-                .replace('\u0667', '7')
-                .replace('\u0668', '8')
-                .replace('\u0669', '9');
     }
 
     private void closeTransientOverlaysIfAny() {
